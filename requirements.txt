@@ -1,0 +1,4 @@
+python-telegram-bot==21.6
+selenium==4.25.0
+aiomysql==0.2.0
+PyMySQL==1.1.1
