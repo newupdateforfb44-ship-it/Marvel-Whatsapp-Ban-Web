@@ -1,0 +1,6 @@
+.git
+__pycache__
+*.pyc
+chrome-profile
+*.md
+schema.sql
