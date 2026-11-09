@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: whatsapp-report-bot
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: MYSQL_URL
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: REPORTS_PER_RUN
+        value: "30"
+      - key: MAX_REPORTS
+        value: "200"
+      - key: DELAY_BETWEEN_REPORTS
+        value: "4"
+      - key: PAGE_LOAD_TIMEOUT
+        value: "90"
+      - key: ACTION_TIMEOUT
+        value: "30"
+      - key: DB_POOL_SIZE
+        value: "2"
+      - key: DB_LOG_REPORTS
+        value: "1"
+      - key: DAILY_LIMIT
+        value: "0"
+      - key: CHROME_LOW_MEMORY
+        value: "1"
+      - key: DEBUG_SHOTS
+        value: "1"
+      - key: KEEPALIVE_SECONDS
+        value: "240"
