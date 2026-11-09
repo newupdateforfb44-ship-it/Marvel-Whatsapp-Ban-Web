@@ -378,6 +378,26 @@ def _phone_input(driver):
     return fallback
 
 
+def _dump_page(driver, why):
+    """Log what the browser actually sees when a step fails."""
+    try:
+        log.warning("%s | url=%s | title=%s", why, driver.current_url, driver.title)
+        found = []
+        for el in driver.find_elements(By.XPATH, "//*[self::button or self::a or self::div or self::span]"):
+            try:
+                if not el.is_displayed():
+                    continue
+                t = el.text.strip()
+            except WebDriverException:
+                continue
+            if t and any(k in t.lower() for k in ("link", "phone", "code", "qr", "log in", "login")):
+                found.append(t[:80])
+        log.warning("%s | visible texts: %s", why, found[:15])
+        driver.save_screenshot("/data/wa_fail.png")
+    except Exception as exc:
+        log.warning("%s | page dump failed: %s", why, exc)
+
+
 def _read_pair_code(driver):
     try:
         for el in driver.find_elements(By.XPATH, "//div|//span"):
@@ -402,6 +422,7 @@ def pair_code(driver, number):
 
     if not _wait_click(driver, LINK_PHONE_XPATHS, 20):
         log.warning("'Link with phone number' not found")
+        _dump_page(driver, "link button missing")
         return None
     time.sleep(1.5)
 
@@ -413,6 +434,7 @@ def pair_code(driver, number):
             time.sleep(0.5)
     if field is None:
         log.warning("phone field not found")
+        _dump_page(driver, "phone field missing")
         return None
 
     try:
@@ -427,6 +449,7 @@ def pair_code(driver, number):
 
     if not _wait_click(driver, NEXT_XPATHS, 12):
         log.warning("Next button not found")
+        _dump_page(driver, "next button missing")
         return None
 
     deadline = time.time() + 35
